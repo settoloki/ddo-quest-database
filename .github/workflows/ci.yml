@@ -95,7 +95,19 @@ jobs:
     - name: 🎼 Install Composer dependencies
       run: composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader
       
-    - name: 📁 Create directories
+    - name: � Setup Node.js for frontend build
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: 📦 Install NPM dependencies
+      run: npm ci
+      
+    - name: 🏗️ Build Frontend Assets
+      run: npm run build
+      
+    - name: �📁 Create directories
       run: |
         mkdir -p storage/logs
         mkdir -p storage/framework/sessions
@@ -274,6 +286,18 @@ jobs:
           
     - name: 🎼 Install Composer dependencies
       run: composer install --prefer-dist --no-progress --optimize-autoloader
+      
+    - name: 🟢 Setup Node.js for frontend build
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: 📦 Install NPM dependencies
+      run: npm ci
+      
+    - name: 🏗️ Build Frontend Assets
+      run: npm run build
       
     - name: ⚙️ Setup Environment
       run: |
