@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ddo\AdventurePack;
+use App\Http\Resources\AdventurePackResource;
+use App\Http\Resources\AdventurePackCollection;
+use App\Http\Resources\QuestCollection;
+use App\Http\Resources\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
