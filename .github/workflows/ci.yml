@@ -315,7 +315,7 @@ jobs:
         sleep 5
         
     - name: ⚡ Run Lighthouse Performance Tests
-      uses: treosh/lighthouse-ci-action@v10
+      uses: treosh/lighthouse-ci-action@v12
       with:
         urls: |
           http://127.0.0.1:8000
