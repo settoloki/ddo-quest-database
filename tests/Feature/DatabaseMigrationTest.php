@@ -209,11 +209,12 @@ class DatabaseMigrationTest extends TestCase
         // First, ensure tables exist
         $this->assertTrue(Schema::hasTable('quests'));
         
-        // Run rollback
-        \Artisan::call('migrate:rollback', ['--step' => 1]);
+        // Run rollback - need 2 steps to remove both quest migrations
+        \Artisan::call('migrate:rollback', ['--step' => 2]);
         
         // Verify all tables are removed
         $expectedTables = [
+            'quest_difficulties',
             'quest_xp_rewards',
             'quests',
             'difficulties',
