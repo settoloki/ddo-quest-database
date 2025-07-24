@@ -45,9 +45,25 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
     
+    Route::get('/quests', function () {
+        return Inertia::render('Quests/Index');
+    })->name('quests');
+    
+    Route::get('/patrons', function () {
+        return Inertia::render('Patrons/Index');
+    })->name('patrons');
+    
+    Route::get('/adventure-packs', function () {
+        return Inertia::render('AdventurePacks/Index');
+    })->name('adventure-packs');
+    
     Route::get('/account', function () {
         return Inertia::render('Account');
     })->name('account');
+    
+    Route::get('/profile', function () {
+        return Inertia::render('Profile');
+    })->name('profile');
 });
 
 
