@@ -10,12 +10,10 @@ import {
     FormControl,
     FormLabel,
     Input,
-    Alert,
-    AlertIcon,
-    AlertTitle,
-    AlertDescription,
 } from '@chakra-ui/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import InfoAlert from '@/Components/InfoAlert';
+import PageHeader from '@/Components/PageHeader';
 import { usePage } from '@inertiajs/react';
 
 export default function Profile() {
@@ -24,14 +22,10 @@ export default function Profile() {
     return (
         <AuthenticatedLayout>
             <VStack spacing={6} align="stretch">
-                <Box>
-                    <Heading size="lg" color="blue.600" mb={2}>
-                        Profile Settings
-                    </Heading>
-                    <Text color="gray.600">
-                        Manage your account information and preferences.
-                    </Text>
-                </Box>
+                <PageHeader 
+                    title="Profile Settings"
+                    description="Manage your account information and preferences."
+                />
 
                 <Box bg="white" p={6} borderRadius="lg" shadow="sm" border="1px" borderColor="gray.200">
                     <VStack spacing={6} align="stretch">
@@ -58,16 +52,10 @@ export default function Profile() {
                                 <Input defaultValue={auth.user.email} type="email" />
                             </FormControl>
 
-                            <Alert status="info" borderRadius="md">
-                                <AlertIcon />
-                                <Box>
-                                    <AlertTitle>Profile Management</AlertTitle>
-                                    <AlertDescription>
-                                        Profile editing functionality is coming soon. 
-                                        Currently displaying your account information from Google OAuth.
-                                    </AlertDescription>
-                                </Box>
-                            </Alert>
+                            <InfoAlert 
+                                title="Profile Management"
+                                description="Profile editing functionality is coming soon. Currently displaying your account information from Google OAuth."
+                            />
 
                             <HStack spacing={3}>
                                 <Button colorScheme="blue" isDisabled>

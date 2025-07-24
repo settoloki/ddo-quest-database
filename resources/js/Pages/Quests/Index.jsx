@@ -48,6 +48,8 @@ import {
 } from '@chakra-ui/react';
 import { SearchIcon, AddIcon, EditIcon, ViewIcon, DeleteIcon, DownloadIcon } from '@chakra-ui/icons';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import LoadingSpinner from '@/Components/LoadingSpinner';
+import PageHeader from '@/Components/PageHeader';
 import axios from 'axios';
 
 export default function QuestsIndex() {
@@ -159,10 +161,7 @@ export default function QuestsIndex() {
     if (loading) {
         return (
             <AuthenticatedLayout>
-                <VStack spacing={6} align="center" justify="center" minH="400px">
-                    <Spinner size="xl" color="blue.500" />
-                    <Text>Loading quests...</Text>
-                </VStack>
+                <LoadingSpinner message="Loading quests..." />
             </AuthenticatedLayout>
         );
     }
@@ -171,24 +170,18 @@ export default function QuestsIndex() {
         <AuthenticatedLayout>
             <VStack spacing={6} align="stretch">
                 {/* Header */}
-                <Flex justify="space-between" align="center" wrap="wrap" gap={4}>
-                    <Box>
-                        <Heading size="lg" color="blue.600" mb={2}>
-                            Quest Management
-                        </Heading>
-                        <Text color="gray.600">
-                            Browse, filter, and manage your DDO quest database
-                        </Text>
-                    </Box>
-                    <HStack>
-                        <Button leftIcon={<AddIcon />} colorScheme="blue" isDisabled>
+                <PageHeader
+                    title="Quest Management"
+                    description="Browse, filter, and manage your DDO quest database"
+                    actions={[
+                        <Button key="add" leftIcon={<AddIcon />} colorScheme="blue" isDisabled>
                             Add Quest
-                        </Button>
-                        <Button leftIcon={<DownloadIcon />} variant="outline" isDisabled>
+                        </Button>,
+                        <Button key="export" leftIcon={<DownloadIcon />} variant="outline" isDisabled>
                             Export
                         </Button>
-                    </HStack>
-                </Flex>
+                    ]}
+                />
 
                 {/* Statistics Cards */}
                 <Grid templateColumns={{ base: '1fr', md: 'repeat(4, 1fr)' }} gap={4}>

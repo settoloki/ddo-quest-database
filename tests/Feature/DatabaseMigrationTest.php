@@ -16,13 +16,14 @@ class DatabaseMigrationTest extends TestCase
     {
         // Test that all core tables exist after migration
         $expectedTables = [
-            'ddo_durations',
-            'ddo_patrons', 
-            'ddo_adventure_packs',
-            'ddo_locations',
-            'ddo_difficulties',
-            'ddo_quests',
-            'ddo_quest_xp_rewards'
+            'durations',
+            'patrons', 
+            'adventure_packs',
+            'locations',
+            'difficulties',
+            'quests',
+            'quest_xp_rewards',
+            'quest_difficulties'
         ];
 
         foreach ($expectedTables as $table) {
@@ -36,55 +37,55 @@ class DatabaseMigrationTest extends TestCase
     #[Test]
     public function durations_table_has_correct_columns()
     {
-        $this->assertTrue(Schema::hasColumn('ddo_durations', 'id'));
-        $this->assertTrue(Schema::hasColumn('ddo_durations', 'name'));
-        $this->assertTrue(Schema::hasColumn('ddo_durations', 'estimated_minutes'));
-        $this->assertTrue(Schema::hasColumn('ddo_durations', 'created_at'));
-        $this->assertTrue(Schema::hasColumn('ddo_durations', 'updated_at'));
+        $this->assertTrue(Schema::hasColumn('durations', 'id'));
+        $this->assertTrue(Schema::hasColumn('durations', 'name'));
+        $this->assertTrue(Schema::hasColumn('durations', 'estimated_minutes'));
+        $this->assertTrue(Schema::hasColumn('durations', 'created_at'));
+        $this->assertTrue(Schema::hasColumn('durations', 'updated_at'));
     }
 
     #[Test]
     public function patrons_table_has_correct_columns()
     {
-        $this->assertTrue(Schema::hasColumn('ddo_patrons', 'id'));
-        $this->assertTrue(Schema::hasColumn('ddo_patrons', 'name'));
-        $this->assertTrue(Schema::hasColumn('ddo_patrons', 'description'));
-        $this->assertTrue(Schema::hasColumn('ddo_patrons', 'created_at'));
-        $this->assertTrue(Schema::hasColumn('ddo_patrons', 'updated_at'));
+        $this->assertTrue(Schema::hasColumn('patrons', 'id'));
+        $this->assertTrue(Schema::hasColumn('patrons', 'name'));
+        $this->assertTrue(Schema::hasColumn('patrons', 'description'));
+        $this->assertTrue(Schema::hasColumn('patrons', 'created_at'));
+        $this->assertTrue(Schema::hasColumn('patrons', 'updated_at'));
     }
 
     #[Test]
     public function adventure_packs_table_has_correct_columns()
     {
-        $this->assertTrue(Schema::hasColumn('ddo_adventure_packs', 'id'));
-        $this->assertTrue(Schema::hasColumn('ddo_adventure_packs', 'name'));
-        $this->assertTrue(Schema::hasColumn('ddo_adventure_packs', 'purchase_type'));
-        $this->assertTrue(Schema::hasColumn('ddo_adventure_packs', 'release_date'));
-        $this->assertTrue(Schema::hasColumn('ddo_adventure_packs', 'created_at'));
-        $this->assertTrue(Schema::hasColumn('ddo_adventure_packs', 'updated_at'));
+        $this->assertTrue(Schema::hasColumn('adventure_packs', 'id'));
+        $this->assertTrue(Schema::hasColumn('adventure_packs', 'name'));
+        $this->assertTrue(Schema::hasColumn('adventure_packs', 'purchase_type'));
+        $this->assertTrue(Schema::hasColumn('adventure_packs', 'release_date'));
+        $this->assertTrue(Schema::hasColumn('adventure_packs', 'created_at'));
+        $this->assertTrue(Schema::hasColumn('adventure_packs', 'updated_at'));
     }
 
     #[Test]
     public function locations_table_has_correct_columns()
     {
-        $this->assertTrue(Schema::hasColumn('ddo_locations', 'id'));
-        $this->assertTrue(Schema::hasColumn('ddo_locations', 'name'));
-        $this->assertTrue(Schema::hasColumn('ddo_locations', 'area_type'));
-        $this->assertTrue(Schema::hasColumn('ddo_locations', 'parent_location_id'));
-        $this->assertTrue(Schema::hasColumn('ddo_locations', 'created_at'));
-        $this->assertTrue(Schema::hasColumn('ddo_locations', 'updated_at'));
+        $this->assertTrue(Schema::hasColumn('locations', 'id'));
+        $this->assertTrue(Schema::hasColumn('locations', 'name'));
+        $this->assertTrue(Schema::hasColumn('locations', 'area_type'));
+        $this->assertTrue(Schema::hasColumn('locations', 'parent_location_id'));
+        $this->assertTrue(Schema::hasColumn('locations', 'created_at'));
+        $this->assertTrue(Schema::hasColumn('locations', 'updated_at'));
     }
 
     #[Test]
     public function difficulties_table_has_correct_columns()
     {
-        $this->assertTrue(Schema::hasColumn('ddo_difficulties', 'id'));
-        $this->assertTrue(Schema::hasColumn('ddo_difficulties', 'name'));
-        $this->assertTrue(Schema::hasColumn('ddo_difficulties', 'multiplier'));
-        $this->assertTrue(Schema::hasColumn('ddo_difficulties', 'first_time_bonus_percent'));
-        $this->assertTrue(Schema::hasColumn('ddo_difficulties', 'sort_order'));
-        $this->assertTrue(Schema::hasColumn('ddo_difficulties', 'created_at'));
-        $this->assertTrue(Schema::hasColumn('ddo_difficulties', 'updated_at'));
+        $this->assertTrue(Schema::hasColumn('difficulties', 'id'));
+        $this->assertTrue(Schema::hasColumn('difficulties', 'name'));
+        $this->assertTrue(Schema::hasColumn('difficulties', 'multiplier'));
+        $this->assertTrue(Schema::hasColumn('difficulties', 'first_time_bonus_percent'));
+        $this->assertTrue(Schema::hasColumn('difficulties', 'sort_order'));
+        $this->assertTrue(Schema::hasColumn('difficulties', 'created_at'));
+        $this->assertTrue(Schema::hasColumn('difficulties', 'updated_at'));
     }
 
     #[Test]
@@ -99,8 +100,8 @@ class DatabaseMigrationTest extends TestCase
 
         foreach ($expectedColumns as $column) {
             $this->assertTrue(
-                Schema::hasColumn('ddo_quests', $column),
-                "Column '{$column}' should exist in ddo_quests table"
+                Schema::hasColumn('quests', $column),
+                "Column '{$column}' should exist in quests table"
             );
         }
     }
@@ -115,8 +116,8 @@ class DatabaseMigrationTest extends TestCase
 
         foreach ($expectedColumns as $column) {
             $this->assertTrue(
-                Schema::hasColumn('ddo_quest_xp_rewards', $column),
-                "Column '{$column}' should exist in ddo_quest_xp_rewards table"
+                Schema::hasColumn('quest_xp_rewards', $column),
+                "Column '{$column}' should exist in quest_xp_rewards table"
             );
         }
     }
@@ -125,34 +126,34 @@ class DatabaseMigrationTest extends TestCase
     public function foreign_key_constraints_work_correctly()
     {
         // Create test data to verify foreign key relationships
-        $duration = \DB::table('ddo_durations')->insertGetId([
+        $duration = \DB::table('durations')->insertGetId([
             'name' => 'Short',
             'estimated_minutes' => 15,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        $patron = \DB::table('ddo_patrons')->insertGetId([
+        $patron = \DB::table('patrons')->insertGetId([
             'name' => 'The Coin Lords',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        $adventurePack = \DB::table('ddo_adventure_packs')->insertGetId([
+        $adventurePack = \DB::table('adventure_packs')->insertGetId([
             'name' => 'Free to Play',
             'purchase_type' => 'Free to Play',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        $location = \DB::table('ddo_locations')->insertGetId([
+        $location = \DB::table('locations')->insertGetId([
             'name' => 'Korthos Village',
             'area_type' => 'Village',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        $difficulty = \DB::table('ddo_difficulties')->insertGetId([
+        $difficulty = \DB::table('difficulties')->insertGetId([
             'name' => 'Normal',
             'multiplier' => 1.00,
             'first_time_bonus_percent' => 20,
@@ -162,7 +163,7 @@ class DatabaseMigrationTest extends TestCase
         ]);
 
         // Test that we can create a quest with these foreign keys
-        $questId = \DB::table('ddo_quests')->insertGetId([
+        $questId = \DB::table('quests')->insertGetId([
             'name' => 'Test Quest',
             'slug' => 'test-quest',
             'heroic_level' => 1,
@@ -177,14 +178,14 @@ class DatabaseMigrationTest extends TestCase
         $this->assertNotNull($questId);
         
         // Verify the quest was created with correct relationships
-        $quest = \DB::table('ddo_quests')->where('id', $questId)->first();
+        $quest = \DB::table('quests')->where('id', $questId)->first();
         $this->assertEquals($duration, $quest->duration_id);
         $this->assertEquals($patron, $quest->patron_id);
         $this->assertEquals($adventurePack, $quest->adventure_pack_id);
         $this->assertEquals($location, $quest->location_id);
 
         // Test quest XP rewards relationship
-        $xpRewardId = \DB::table('ddo_quest_xp_rewards')->insertGetId([
+        $xpRewardId = \DB::table('quest_xp_rewards')->insertGetId([
             'quest_id' => $questId,
             'difficulty_id' => $difficulty,
             'is_epic' => false,
@@ -196,7 +197,7 @@ class DatabaseMigrationTest extends TestCase
 
         $this->assertNotNull($xpRewardId);
         
-        $xpReward = \DB::table('ddo_quest_xp_rewards')->where('id', $xpRewardId)->first();
+        $xpReward = \DB::table('quest_xp_rewards')->where('id', $xpRewardId)->first();
         $this->assertEquals($questId, $xpReward->quest_id);
         $this->assertEquals($difficulty, $xpReward->difficulty_id);
         $this->assertEquals(1000, $xpReward->base_xp);
@@ -206,20 +207,20 @@ class DatabaseMigrationTest extends TestCase
     public function migration_rollback_removes_all_tables()
     {
         // First, ensure tables exist
-        $this->assertTrue(Schema::hasTable('ddo_quests'));
+        $this->assertTrue(Schema::hasTable('quests'));
         
         // Run rollback
         \Artisan::call('migrate:rollback', ['--step' => 1]);
         
         // Verify all tables are removed
         $expectedTables = [
-            'ddo_quest_xp_rewards',
-            'ddo_quests',
-            'ddo_difficulties',
-            'ddo_locations',
-            'ddo_adventure_packs',
-            'ddo_patrons',
-            'ddo_durations'
+            'quest_xp_rewards',
+            'quests',
+            'difficulties',
+            'locations',
+            'adventure_packs',
+            'patrons',
+            'durations'
         ];
 
         foreach ($expectedTables as $table) {
@@ -240,16 +241,16 @@ class DatabaseMigrationTest extends TestCase
         // This test ensures no errors occur when running queries that would use indexes
         
         // Test heroic_level index
-        \DB::table('ddo_quests')->where('heroic_level', 1)->get();
+        \DB::table('quests')->where('heroic_level', 1)->get();
         
         // Test epic_level index  
-        \DB::table('ddo_quests')->where('epic_level', 20)->get();
+        \DB::table('quests')->where('epic_level', 20)->get();
         
         // Test compound index (patron_id, duration_id)
-        \DB::table('ddo_quests')->where('patron_id', 1)->where('duration_id', 1)->get();
+        \DB::table('quests')->where('patron_id', 1)->where('duration_id', 1)->get();
         
         // Test name index for search
-        \DB::table('ddo_quests')->where('name', 'like', '%test%')->get();
+        \DB::table('quests')->where('name', 'like', '%test%')->get();
         
         // If we get here without exceptions, indexes are working
         $this->assertTrue(true);
