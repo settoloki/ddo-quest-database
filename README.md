@@ -1,61 +1,239 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🗡️ DDO Quest Database
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+<div align="center">
 
-## About Laravel
+```
+  ____  ____   ___     ____    _  _____ _    ____    _    ____  _____ 
+ |  _ \|  _ \ / _ \   |  _ \  / \|_   _| |  | __ )  / \  / ___|| ____|
+ | | | | | | | | | |  | | | |/ _ \ | | | |  |  _ \ / _ \ \___ \|  _|  
+ | |_| | |_| | |_| |  | |_| / ___ \| | | |  | |_) / ___ \ ___) | |___ 
+ |____/|____/ \___/   |____/_/   \_\_| |_|  |____/_/   \_\____/|_____|
+                                                                      
+        Dungeons & Dragons Online Quest Database & Optimization Tool
+```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/settoloki/ddo-quest-database)
+[![Laravel](https://img.shields.io/badge/Laravel-12.21.0-FF2D20?logo=laravel)](https://laravel.com)
+[![React](https://img.shields.io/badge/React-18.2.0-61DAFB?logo=react)](https://reactjs.org)
+[![Tests](https://img.shields.io/badge/tests-134%20passing-brightgreen)](./tests)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+*The ultimate tool for optimizing your DDO character progression*
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+</div>
 
-## Learning Laravel
+## 🌟 About DDO Database
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+The **DDO Quest Database** is a comprehensive web application designed to revolutionize how players approach character progression in Dungeons & Dragons Online. Built with modern web technologies, this tool provides an intelligent, data-driven approach to quest selection and leveling optimization.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 🎯 Our Mission
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+To create the most comprehensive and intelligent DDO quest database that empowers players to:
+- **Optimize leveling routes** with scientific precision
+- **Maximize XP efficiency** across all character builds
+- **Discover quest synergies** and saga completions
+- **Plan character progression** with confidence
+- **Save time** and enhance the gaming experience
 
-## Laravel Sponsors
+### 🚀 What We Hope to Achieve
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+**For Individual Players:**
+- Reduce time spent researching optimal quest paths
+- Maximize XP per hour played
+- Discover hidden quest synergies and bonus opportunities
+- Plan efficient True Reincarnation cycles
 
-### Premium Partners
+**For the DDO Community:**
+- Provide accurate, up-to-date quest data sourced from DDOWiki
+- Create a collaborative platform for sharing optimization strategies
+- Build comprehensive analytics on quest popularity and efficiency
+- Support both new players and veterans with tailored recommendations
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+**For Character Building:**
+- Enable precise planning for specific level ranges
+- Support multiple character builds and playstyles
+- Account for group dynamics and solo play preferences
+- Integrate with enhancement planning and gear progression
 
-## Contributing
+## ✨ Key Features
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 🗃️ Comprehensive Quest Database
+- **1000+ Quests** from all level ranges (1-30 Heroic, Epic, Legendary)
+- **Detailed XP calculations** for all difficulty levels
+- **Saga tracking** and completion bonuses
+- **Adventure pack organization** with purchase requirements
+- **Location mapping** and quest prerequisites
 
-## Code of Conduct
+### 🧮 Advanced Optimization Engine
+- **XP per minute calculations** with accuracy metrics
+- **Multi-objective optimization** (time, favor, saga completion)
+- **Character build considerations** (melee, caster, hybrid)
+- **Group size optimization** and bonus calculations
+- **Ransack tracking** and repeat quest management
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 🎨 Modern Web Interface
+- **Intuitive React frontend** with Chakra UI components
+- **Advanced filtering** by level, patron, duration, rewards
+- **Interactive quest browser** with detailed modal views
+- **Real-time search** and sorting capabilities
+- **Mobile-responsive design** for on-the-go planning
 
-## Security Vulnerabilities
+### 📊 Analytics & Insights
+- **Quest popularity metrics** and community trends
+- **Efficiency comparisons** across different approaches
+- **Progress tracking** for individual characters
+- **Statistical analysis** of leveling patterns
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🛠️ Technology Stack
 
-## License
+**Backend (Laravel 12.21.0)**
+- PHP 8.4 with modern features
+- MySQL database with optimized schema
+- RESTful API with comprehensive validation
+- Laravel Sail for containerized development
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Frontend (React 18.2.0)**
+- Inertia.js for seamless SPA experience
+- Chakra UI for beautiful, accessible components
+- Modern JavaScript with ES6+ features
+- Responsive design principles
+
+**Development & Testing**
+- 134+ comprehensive tests with PHPUnit
+- Docker-based development environment
+- Automated CI/CD pipeline
+- Code quality tools and standards
+
+## 🏗️ Project Architecture
+
+### Database Schema
+```
+├── Core Tables
+│   ├── quests (1000+ DDO quests)
+│   ├── patrons (The Coin Lords, House Deneith, etc.)
+│   ├── adventure_packs (Free to Play, Premium, VIP)
+│   └── locations (Stormreach, Korthos, etc.)
+├── XP System
+│   ├── difficulties (Casual → Reaper)
+│   ├── quest_xp_rewards (by difficulty)
+│   └── bonus_xp_categories (Monster, Trap, etc.)
+└── Advanced Features
+    ├── sagas (completion tracking)
+    ├── quest_objectives (optional goals)
+    └── optimization_cache (performance)
+```
+
+### API Endpoints
+```
+GET  /api/v1/quests              - Quest listing with filters
+GET  /api/v1/quests/{id}         - Detailed quest information
+GET  /api/v1/quests/optimize     - Leveling route optimization
+GET  /api/v1/patrons             - Patron information
+GET  /api/v1/adventure-packs     - Adventure pack details
+GET  /api/v1/sagas               - Saga completion tracking
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Docker & Docker Compose
+- Git
+- Modern web browser
+
+### Quick Setup
+```bash
+# Clone the repository
+git clone https://github.com/settoloki/ddo-quest-database.git
+cd ddo-quest-database
+
+# Start the development environment
+./vendor/bin/sail up -d
+
+# Install dependencies and setup database
+./vendor/bin/sail composer install
+./vendor/bin/sail npm install
+./vendor/bin/sail artisan migrate --seed
+
+# Build frontend assets
+./vendor/bin/sail npm run build
+
+# Access the application
+open http://localhost
+```
+
+### Development Commands
+```bash
+# Run tests
+./vendor/bin/sail artisan test
+
+# Start frontend development server
+./vendor/bin/sail npm run dev
+
+# Access database
+./vendor/bin/sail mysql
+
+# View logs
+./vendor/bin/sail artisan tail
+```
+
+## 📈 Current Status
+
+### ✅ Completed Features
+- **Core Infrastructure**: Database schema, models, API endpoints
+- **Quest Management**: Full CRUD operations with validation
+- **Frontend Interface**: React components with advanced filtering
+- **Testing Suite**: 134 passing tests with comprehensive coverage
+- **Data Foundation**: Reference data and sample quests
+
+### 🚧 In Development
+- **Wiki Scraping Service**: Automated data import from DDOWiki
+- **Optimization Engine**: Multi-objective leveling algorithms
+- **Saga System**: Completion tracking and bonus calculations
+- **Mobile App**: React Native companion application
+
+### 🎯 Roadmap
+- **Q3 2025**: Complete wiki scraping and full quest database
+- **Q4 2025**: Launch optimization engine and character tracking
+- **Q1 2026**: Mobile app release and community features
+- **Q2 2026**: Advanced analytics and machine learning insights
+
+## 🤝 Contributing
+
+We welcome contributions from the DDO community! Whether you're a developer, player, or data enthusiast, there are many ways to help:
+
+### For Developers
+- **Bug fixes** and feature implementations
+- **Performance optimizations** and code quality improvements
+- **Testing** and documentation enhancements
+- **Wiki scraping** accuracy and data validation
+
+### For Players
+- **Quest data validation** and corrections
+- **Optimization strategy** testing and feedback
+- **User experience** feedback and suggestions
+- **Community outreach** and promotion
+
+### Getting Started
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is open-sourced software licensed under the [MIT license](LICENSE).
+
+## 🎮 Dedication
+
+*Built with ❤️ for the DDO community by players, for players.*
+
+---
+
+<div align="center">
+
+**[Website](https://ddo-database.local) • [Documentation](./docs) • [Issues](https://github.com/settoloki/ddo-quest-database/issues) • [Discord](https://discord.gg/ddo)**
+
+*Join thousands of players optimizing their DDO experience*
+
+</div>
