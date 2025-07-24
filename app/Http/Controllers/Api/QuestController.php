@@ -7,6 +7,10 @@ use App\Models\Ddo\Quest;
 use App\Http\Requests\StoreQuestRequest;
 use App\Http\Requests\UpdateQuestRequest;
 use App\Http\Requests\QuestFilterRequest;
+use App\Http\Resources\QuestResource;
+use App\Http\Resources\QuestCollection;
+use App\Http\Resources\DifficultyResource;
+use App\Http\Resources\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -15,7 +19,7 @@ class QuestController extends Controller
     /**
      * Display a listing of quests with filtering and pagination.
      */
-    public function index(QuestFilterRequest $request): JsonResponse
+    public function index(QuestFilterRequest $request)
     {
         try {
             $query = Quest::with(['duration', 'patron', 'adventurePack', 'location']);
@@ -92,37 +96,20 @@ class QuestController extends Controller
             $perPage = min((int) $request->get('per_page', 15), 100); // Max 100 per page
             $quests = $query->paginate($perPage);
 
-            return response()->json([
-                'success' => true,
-                'data' => $quests->items(),
-                'pagination' => [
-                    'current_page' => $quests->currentPage(),
-                    'last_page' => $quests->lastPage(),
-                    'per_page' => $quests->perPage(),
-                    'total' => $quests->total(),
-                    'from' => $quests->firstItem(),
-                    'to' => $quests->lastItem(),
-                ],
-                'filters_applied' => $request->only([
-                    'level', 'heroic_level', 'epic_level', 'legendary_level', 
-                    'level_range', 'patron', 'duration', 'adventure_pack', 
-                    'free_to_play', 'extreme_challenge', 'search'
-                ]),
-            ]);
+            return new QuestCollection($quests);
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to retrieve quests',
-                'error' => config('app.debug') ? $e->getMessage() : 'An error occurred'
-            ], 500);
+            return ApiResponse::error(
+                'Failed to retrieve quests',
+                config('app.debug') ? ['exception' => $e->getMessage()] : null
+            );
         }
     }
 
     /**
      * Store a newly created quest in storage.
      */
-    public function store(StoreQuestRequest $request): JsonResponse
+    public function store(StoreQuestRequest $request)
     {
         try {
             $validated = $request->validated();
@@ -130,25 +117,23 @@ class QuestController extends Controller
             $quest = Quest::create($validated);
             $quest->load(['duration', 'patron', 'adventurePack', 'location']);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Quest created successfully',
-                'data' => $quest
-            ], 201);
+            return ApiResponse::created(
+                new QuestResource($quest),
+                'Quest created successfully'
+            );
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create quest',
-                'error' => config('app.debug') ? $e->getMessage() : 'An error occurred'
-            ], 500);
+            return ApiResponse::error(
+                'Failed to create quest',
+                config('app.debug') ? ['exception' => $e->getMessage()] : null
+            );
         }
     }
 
     /**
      * Display the specified quest.
      */
-    public function show(string $id): JsonResponse
+    public function show(string $id)
     {
         try {
             $quest = Quest::with([
@@ -159,29 +144,25 @@ class QuestController extends Controller
                 'xpRewards.difficulty'
             ])->findOrFail($id);
 
-            return response()->json([
-                'success' => true,
-                'data' => $quest
-            ]);
+            return ApiResponse::success(
+                new QuestResource($quest),
+                'Quest retrieved successfully'
+            );
 
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Quest not found'
-            ], 404);
+            return ApiResponse::notFound('Quest not found');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to retrieve quest',
-                'error' => config('app.debug') ? $e->getMessage() : 'An error occurred'
-            ], 500);
+            return ApiResponse::error(
+                'Failed to retrieve quest',
+                config('app.debug') ? ['exception' => $e->getMessage()] : null
+            );
         }
     }
 
     /**
      * Update the specified quest in storage.
      */
-    public function update(UpdateQuestRequest $request, string $id): JsonResponse
+    public function update(UpdateQuestRequest $request, string $id)
     {
         try {
             $quest = Quest::findOrFail($id);
@@ -190,30 +171,25 @@ class QuestController extends Controller
             $quest->update($validated);
             $quest->load(['duration', 'patron', 'adventurePack', 'location']);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Quest updated successfully',
-                'data' => $quest
-            ]);
+            return ApiResponse::success(
+                new QuestResource($quest),
+                'Quest updated successfully'
+            );
 
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Quest not found'
-            ], 404);
+            return ApiResponse::notFound('Quest not found');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update quest',
-                'error' => config('app.debug') ? $e->getMessage() : 'An error occurred'
-            ], 500);
+            return ApiResponse::error(
+                'Failed to update quest',
+                config('app.debug') ? ['exception' => $e->getMessage()] : null
+            );
         }
     }
 
     /**
      * Remove the specified quest from storage.
      */
-    public function destroy(string $id): JsonResponse
+    public function destroy(string $id)
     {
         try {
             $quest = Quest::findOrFail($id);
@@ -221,22 +197,18 @@ class QuestController extends Controller
             
             $quest->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => "Quest '{$questName}' deleted successfully"
-            ]);
+            return ApiResponse::success(
+                null,
+                "Quest '{$questName}' deleted successfully"
+            );
 
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Quest not found'
-            ], 404);
+            return ApiResponse::notFound('Quest not found');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to delete quest',
-                'error' => config('app.debug') ? $e->getMessage() : 'An error occurred'
-            ], 500);
+            return ApiResponse::error(
+                'Failed to delete quest',
+                config('app.debug') ? ['exception' => $e->getMessage()] : null
+            );
         }
     }
 
@@ -257,25 +229,18 @@ class QuestController extends Controller
         try {
             $quest = Quest::with(['xpRewards.difficulty'])->findOrFail($id);
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'quest' => $quest->only(['id', 'name', 'slug']),
-                    'xp_rewards' => $quest->grouped_xp_rewards,
-                ]
-            ]);
+            return ApiResponse::success([
+                'quest' => new QuestResource($quest),
+                'xp_rewards' => $quest->grouped_xp_rewards,
+            ], 'XP rewards retrieved successfully');
 
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Quest not found'
-            ], 404);
+            return ApiResponse::notFound('Quest not found');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to retrieve XP rewards',
-                'error' => config('app.debug') ? $e->getMessage() : 'An error occurred'
-            ], 500);
+            return ApiResponse::error(
+                'Failed to retrieve XP rewards',
+                config('app.debug') ? ['exception' => $e->getMessage()] : null
+            );
         }
     }
 
@@ -310,31 +275,33 @@ class QuestController extends Controller
 
             $calculatedXp = $difficulty->calculateXp($baseXp, $includeFirstTimeBonus);
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'quest' => $quest->only(['id', 'name', 'slug']),
-                    'difficulty' => $difficulty->only(['id', 'name', 'multiplier']),
-                    'base_xp' => $baseXp,
-                    'calculated_xp' => $calculatedXp,
-                    'multiplier' => $difficulty->multiplier,
-                    'first_time_bonus' => $includeFirstTimeBonus ? $difficulty->first_time_bonus_percent : null,
-                    'is_epic' => $isEpic,
-                    'is_legendary' => $isLegendary,
-                ]
-            ]);
+            // Add calculated XP data to quest resource
+            $quest->calculated_xp = [
+                'base_xp' => $baseXp,
+                'difficulty_multiplier' => $difficulty->xp_multiplier,
+                'total_xp' => $calculatedXp,
+                'difficulty' => $difficulty->name,
+            ];
+
+            return ApiResponse::success([
+                'quest' => new QuestResource($quest),
+                'calculation_details' => [
+                    'difficulty' => new DifficultyResource($difficulty),
+                    'parameters' => [
+                        'is_epic' => $isEpic,
+                        'is_legendary' => $isLegendary,
+                        'include_first_time_bonus' => $includeFirstTimeBonus,
+                    ],
+                ],
+            ], 'XP calculated successfully');
 
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Quest not found'
-            ], 404);
+            return ApiResponse::notFound('Quest not found');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to calculate XP',
-                'error' => config('app.debug') ? $e->getMessage() : 'An error occurred'
-            ], 500);
+            return ApiResponse::error(
+                'Failed to calculate XP',
+                config('app.debug') ? ['exception' => $e->getMessage()] : null
+            );
         }
     }
 }

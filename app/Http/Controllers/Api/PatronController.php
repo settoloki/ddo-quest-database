@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ddo\Patron;
+use App\Http\Resources\PatronResource;
+use App\Http\Resources\PatronCollection;
+use App\Http\Resources\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -13,7 +16,7 @@ class PatronController extends Controller
     /**
      * Display a listing of patrons.
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request)
     {
         try {
             $query = Patron::query();
@@ -48,58 +51,44 @@ class PatronController extends Controller
 
             $patrons = $query->get();
 
-            return response()->json([
-                'success' => true,
-                'data' => $patrons,
-                'total' => $patrons->count()
-            ]);
+            return new PatronCollection($patrons);
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to retrieve patrons',
-                'error' => config('app.debug') ? $e->getMessage() : 'An error occurred'
-            ], 500);
+            return ApiResponse::error(
+                'Failed to retrieve patrons',
+                config('app.debug') ? ['exception' => $e->getMessage()] : null
+            );
         }
     }
 
     /**
      * Display the specified patron.
      */
-    public function show(string $id): JsonResponse
+    public function show(string $id)
     {
         try {
             $patron = Patron::with(['quests.duration', 'quests.adventurePack'])
                 ->findOrFail($id);
 
-            // Add computed attributes
-            $patronData = $patron->toArray();
-            $patronData['total_favor'] = $patron->total_favor;
-            $patronData['quest_count'] = $patron->quests->count();
-
-            return response()->json([
-                'success' => true,
-                'data' => $patronData
-            ]);
+            return ApiResponse::success(
+                new PatronResource($patron),
+                'Patron retrieved successfully'
+            );
 
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Patron not found'
-            ], 404);
+            return ApiResponse::notFound('Patron not found');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to retrieve patron',
-                'error' => config('app.debug') ? $e->getMessage() : 'An error occurred'
-            ], 500);
+            return ApiResponse::error(
+                'Failed to retrieve patron',
+                config('app.debug') ? ['exception' => $e->getMessage()] : null
+            );
         }
     }
 
     /**
      * Store a newly created patron in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
         try {
             $validated = $request->validate([
@@ -127,7 +116,7 @@ class PatronController extends Controller
     /**
      * Update the specified patron in storage.
      */
-    public function update(Request $request, string $id): JsonResponse
+    public function update(Request $request, string $id)
     {
         try {
             $patron = Patron::findOrFail($id);
@@ -162,7 +151,7 @@ class PatronController extends Controller
     /**
      * Remove the specified patron from storage.
      */
-    public function destroy(string $id): JsonResponse
+    public function destroy(string $id)
     {
         try {
             $patron = Patron::findOrFail($id);
