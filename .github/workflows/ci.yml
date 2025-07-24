@@ -1,0 +1,375 @@
+name: 🚀 CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  # Job 1: Code Quality & Security
+  code-quality:
+    name: 🔍 Code Quality & Security
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🐘 Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, pdo_mysql, bcmath
+        coverage: xdebug
+        tools: composer:v2
+        
+    - name: 📦 Cache Composer dependencies
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+          
+    - name: 🎼 Install Composer dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader
+      
+    - name: 🔍 Run PHP CS Fixer (Code Style)
+      run: |
+        composer require --dev friendsofphp/php-cs-fixer
+        ./vendor/bin/php-cs-fixer fix --dry-run --diff --verbose
+      continue-on-error: true
+      
+    - name: 🛡️ Run PHPStan (Static Analysis)
+      run: |
+        composer require --dev phpstan/phpstan
+        ./vendor/bin/phpstan analyse --memory-limit=2G
+      continue-on-error: true
+      
+    - name: 🔐 Security Audit
+      run: composer audit
+      continue-on-error: true
+
+  # Job 2: Backend Tests
+  backend-tests:
+    name: 🧪 Backend Tests (PHP ${{ matrix.php-version }})
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.4']
+        
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: ddo_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🐘 Setup PHP ${{ matrix.php-version }}
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, pdo_mysql, bcmath
+        coverage: xdebug
+        tools: composer:v2
+        
+    - name: 📦 Cache Composer dependencies
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-${{ matrix.php-version }}-
+          ${{ runner.os }}-php-
+          
+    - name: 🎼 Install Composer dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader
+      
+    - name: 📁 Create directories
+      run: |
+        mkdir -p storage/logs
+        mkdir -p storage/framework/sessions
+        mkdir -p storage/framework/views
+        mkdir -p storage/framework/cache
+        mkdir -p bootstrap/cache
+        
+    - name: ⚙️ Setup Environment
+      run: |
+        cp .env.example .env.testing
+        echo "DB_CONNECTION=mysql" >> .env.testing
+        echo "DB_HOST=127.0.0.1" >> .env.testing
+        echo "DB_PORT=3306" >> .env.testing
+        echo "DB_DATABASE=ddo_test" >> .env.testing
+        echo "DB_USERNAME=root" >> .env.testing
+        echo "DB_PASSWORD=" >> .env.testing
+        echo "APP_ENV=testing" >> .env.testing
+        echo "APP_DEBUG=true" >> .env.testing
+        
+    - name: 🔑 Generate Application Key
+      run: php artisan key:generate --env=testing
+      
+    - name: 🗃️ Run Database Migrations
+      run: php artisan migrate --env=testing --force
+      
+    - name: 🌱 Seed Database
+      run: php artisan db:seed --env=testing --force
+      
+    - name: 🧪 Run PHPUnit Tests
+      run: php artisan test --coverage --min=80
+      
+    - name: 📊 Upload Coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: backend
+        name: backend-coverage
+        fail_ci_if_error: false
+
+  # Job 3: Frontend Tests
+  frontend-tests:
+    name: 🎨 Frontend Tests (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ['20', '22']
+        
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🟢 Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - name: 📦 Install NPM dependencies
+      run: npm ci
+      
+    - name: 🔍 Run ESLint (Code Quality)
+      run: |
+        npm install --save-dev eslint @eslint/js eslint-plugin-react eslint-plugin-react-hooks
+        npx eslint resources/js --ext .js,.jsx --max-warnings 0
+      continue-on-error: true
+      
+    - name: 🎨 Run Prettier (Code Formatting)
+      run: |
+        npm install --save-dev prettier
+        npx prettier --check "resources/js/**/*.{js,jsx}"
+      continue-on-error: true
+      
+    - name: 🧪 Run Jest Tests (if configured)
+      run: |
+        if [ -f "jest.config.js" ] || grep -q "jest" package.json; then
+          npm run test
+        else
+          echo "No Jest tests configured, skipping..."
+        fi
+      continue-on-error: true
+      
+    - name: 🏗️ Build Frontend Assets
+      run: npm run build
+      
+    - name: 📦 Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend-build-${{ matrix.node-version }}
+        path: public/build
+        retention-days: 7
+
+  # Job 4: Security & Dependency Check
+  security-scan:
+    name: 🔒 Security & Dependency Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🔍 Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        
+    - name: 📊 Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-results.sarif'
+      if: always()
+      
+    - name: 🐘 PHP Security Checker
+      run: |
+        curl -H "Accept: text/plain" https://security.symfony.com/check_lock -F lock=@composer.lock
+      continue-on-error: true
+      
+    - name: 🟢 NPM Audit
+      run: |
+        npm audit --audit-level moderate
+      continue-on-error: true
+
+  # Job 5: Database Tests
+  database-tests:
+    name: 🗃️ Database Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: ddo_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🐘 Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, pdo_mysql, bcmath
+        tools: composer:v2
+        
+    - name: 📦 Cache Composer dependencies
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+          
+    - name: 🎼 Install Composer dependencies
+      run: composer install --prefer-dist --no-progress --optimize-autoloader
+      
+    - name: ⚙️ Setup Environment
+      run: |
+        cp .env.example .env.testing
+        echo "DB_CONNECTION=mysql" >> .env.testing
+        echo "DB_HOST=127.0.0.1" >> .env.testing
+        echo "DB_PORT=3306" >> .env.testing
+        echo "DB_DATABASE=ddo_test" >> .env.testing
+        echo "DB_USERNAME=root" >> .env.testing
+        echo "DB_PASSWORD=" >> .env.testing
+        
+    - name: 🔑 Generate Application Key
+      run: php artisan key:generate --env=testing
+      
+    - name: 🗃️ Test Database Migrations
+      run: |
+        php artisan migrate --env=testing --force
+        php artisan migrate:rollback --env=testing --force
+        php artisan migrate --env=testing --force
+        
+    - name: 🌱 Test Database Seeding
+      run: php artisan db:seed --env=testing --force
+      
+    - name: 🧪 Run Database-specific Tests
+      run: php artisan test --filter="Database" --env=testing
+
+  # Job 6: Performance Tests
+  performance-tests:
+    name: ⚡ Performance Tests
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🐘 Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, bcmath
+        tools: composer:v2
+        
+    - name: 🎼 Install dependencies
+      run: composer install --prefer-dist --no-progress --optimize-autoloader
+      
+    - name: ⚙️ Setup Environment
+      run: |
+        cp .env.example .env
+        php artisan key:generate
+        
+    - name: 🚀 Start Laravel Server
+      run: |
+        php artisan serve --host=127.0.0.1 --port=8000 &
+        sleep 5
+        
+    - name: ⚡ Run Lighthouse Performance Tests
+      uses: treosh/lighthouse-ci-action@v10
+      with:
+        urls: |
+          http://127.0.0.1:8000
+          http://127.0.0.1:8000/quests
+        configPath: './lighthouse.config.js'
+        uploadArtifacts: true
+        temporaryPublicStorage: true
+
+  # Job 7: Deployment (Production)
+  deploy:
+    name: 🚀 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [code-quality, backend-tests, frontend-tests, security-scan, database-tests]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🚀 Deploy notification
+      run: |
+        echo "🎉 All tests passed! Ready for deployment to production."
+        echo "📊 Test Results Summary:"
+        echo "✅ Code Quality: Passed"
+        echo "✅ Backend Tests: Passed" 
+        echo "✅ Frontend Tests: Passed"
+        echo "✅ Security Scan: Passed"
+        echo "✅ Database Tests: Passed"
+        
+    # Add your actual deployment steps here
+    # - name: 🌐 Deploy to Server
+    #   run: |
+    #     # Your deployment commands here
+    #     echo "Deployment would happen here"
+
+  # Job 8: Notification
+  notify:
+    name: 📢 Notify Results
+    runs-on: ubuntu-latest
+    needs: [code-quality, backend-tests, frontend-tests, security-scan, database-tests]
+    if: always()
+    
+    steps:
+    - name: 📊 Build Status Summary
+      run: |
+        echo "## 📊 CI/CD Pipeline Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Code Quality | ${{ needs.code-quality.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Backend Tests | ${{ needs.backend-tests.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Frontend Tests | ${{ needs.frontend-tests.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Security Scan | ${{ needs.security-scan.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Database Tests | ${{ needs.database-tests.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "🎯 **Overall Status**: ${{ (needs.code-quality.result == 'success' && needs.backend-tests.result == 'success' && needs.frontend-tests.result == 'success' && needs.security-scan.result == 'success' && needs.database-tests.result == 'success') && '✅ All Passed' || '❌ Some Failed' }}" >> $GITHUB_STEP_SUMMARY

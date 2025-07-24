@@ -1,0 +1,21 @@
+# Created by GitHub Actions CI/CD workflow
+build/
+coverage/
+.phpunit.cache/
+storage/logs/*.log
+!storage/logs/.gitkeep
+
+# Lighthouse reports
+lighthouse-results/
+lhci_reports/
+
+# PHPStan cache
+build/phpstan/
+
+# PHP CS Fixer cache
+.php-cs-fixer.cache
+
+# Test coverage
+coverage.xml
+clover.xml
+phpunit.xml.coverage

@@ -1,0 +1,21 @@
+parameters:
+    level: 8
+    paths:
+        - app
+        - config
+        - database
+        - routes
+    excludePaths:
+        - app/Http/Middleware/TrustProxies.php
+        - app/Http/Middleware/EncryptCookies.php
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    ignoreErrors:
+        # Laravel specific ignores
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder#'
+        - '#Call to an undefined method Illuminate\\Database\\Query\\Builder#'
+        - '#Access to an undefined property Illuminate\\Database\\Eloquent\\Model#'
+        # Inertia specific ignores
+        - '#Call to an undefined method Inertia\\Response#'
+    tmpDir: build/phpstan
+    reportUnmatchedIgnoredErrors: false
