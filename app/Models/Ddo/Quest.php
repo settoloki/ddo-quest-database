@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
 class Quest extends Model
@@ -107,6 +108,15 @@ class Quest extends Model
     public function xpRewards(): HasMany
     {
         return $this->hasMany(QuestXpReward::class, 'quest_id');
+    }
+
+    /**
+     * Get the difficulties available for this quest.
+     */
+    public function difficulties(): BelongsToMany
+    {
+        return $this->belongsToMany(Difficulty::class, 'quest_difficulties', 'quest_id', 'difficulty_id')
+                    ->withTimestamps();
     }
 
     /**
