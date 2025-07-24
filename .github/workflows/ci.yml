@@ -132,6 +132,7 @@ jobs:
         export DB_DATABASE=ddo_test
         export DB_USERNAME=root
         export DB_PASSWORD=
+        export APP_KEY=base64:2fl+Ktvkfl+Fuz4Qp/A75G2RTiWVA/ZoKX87l+DtaJ0=
         php artisan test --coverage --min=80
       env:
         DB_CONNECTION: mysql
@@ -140,6 +141,7 @@ jobs:
         DB_DATABASE: ddo_test
         DB_USERNAME: root
         DB_PASSWORD: ""
+        APP_KEY: base64:2fl+Ktvkfl+Fuz4Qp/A75G2RTiWVA/ZoKX87l+DtaJ0=
       
     - name: 📊 Upload Coverage to Codecov
       uses: codecov/codecov-action@v3
@@ -303,6 +305,7 @@ jobs:
         export DB_DATABASE=ddo_test
         export DB_USERNAME=root
         export DB_PASSWORD=
+        export APP_KEY=base64:2fl+Ktvkfl+Fuz4Qp/A75G2RTiWVA/ZoKX87l+DtaJ0=
         php artisan test --filter="Database" --env=testing
       env:
         DB_CONNECTION: mysql
@@ -311,6 +314,7 @@ jobs:
         DB_DATABASE: ddo_test
         DB_USERNAME: root
         DB_PASSWORD: ""
+        APP_KEY: base64:2fl+Ktvkfl+Fuz4Qp/A75G2RTiWVA/ZoKX87l+DtaJ0=
 
   # Job 6: Performance Tests
   performance-tests:
