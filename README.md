@@ -163,11 +163,18 @@ open http://localhost
 
 ### Development Commands
 ```bash
+# Create a new feature branch (recommended)
+./scripts/create-branch.sh feature TASK-XXX description
+
 # Run tests
 ./vendor/bin/sail artisan test
 
 # Start frontend development server
 ./vendor/bin/sail npm run dev
+
+# Check code style
+composer run-script cs-check
+npm run lint
 
 # Access database
 ./vendor/bin/sail mysql
@@ -175,6 +182,20 @@ open http://localhost
 # View logs
 ./vendor/bin/sail artisan tail
 ```
+
+### Development Workflow
+We use a **feature branch workflow** with pull request reviews:
+
+1. **Create branch**: `./scripts/create-branch.sh feature TASK-XXX description`
+2. **Make changes**: Implement your feature or fix
+3. **Test locally**: `./vendor/bin/sail artisan test`
+4. **Commit**: `git commit -m "feat(TASK-XXX): description"`
+5. **Push**: `git push -u origin feature/TASK-XXX-description`
+6. **Create PR**: Open Pull Request on GitHub
+7. **Review**: Wait for CI/CD checks and approval
+8. **Merge**: Squash and merge after approval
+
+📖 **Full workflow guide**: [docs/DEVELOPMENT_WORKFLOW.md](docs/DEVELOPMENT_WORKFLOW.md)
 
 ## 📈 Current Status
 

@@ -1,0 +1,60 @@
+name: 🛡️ Branch Protection Enforcement
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  # This job will fail if someone tries to push directly to main
+  enforce-pr-workflow:
+    name: 🚫 Block Direct Push to Main
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: ❌ Direct Push to Main Detected
+      run: |
+        echo "::error::Direct pushes to main branch are not allowed!"
+        echo "::error::Please use the following workflow:"
+        echo "::error::1. Create a feature branch: git checkout -b feature/your-feature-name"
+        echo "::error::2. Make your changes and commit them"
+        echo "::error::3. Push your branch: git push origin feature/your-feature-name"
+        echo "::error::4. Create a Pull Request on GitHub"
+        echo "::error::5. Wait for CI/CD checks and code review"
+        echo "::error::6. Merge via Pull Request after approval"
+        exit 1
+
+  # Job to remind about proper workflow
+  workflow-reminder:
+    name: 📋 Workflow Reminder
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    
+    steps:
+    - name: 📝 Development Workflow Guide
+      run: |
+        echo "## 🚀 DDO Database Development Workflow" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🎯 For New Features/Bug Fixes:" >> $GITHUB_STEP_SUMMARY
+        echo "1. **Create Branch**: \`git checkout -b feature/TASK-XXX-description\`" >> $GITHUB_STEP_SUMMARY
+        echo "2. **Make Changes**: Implement your feature or fix" >> $GITHUB_STEP_SUMMARY
+        echo "3. **Commit Changes**: \`git commit -m \"feat: description\"\`" >> $GITHUB_STEP_SUMMARY
+        echo "4. **Push Branch**: \`git push origin feature/TASK-XXX-description\`" >> $GITHUB_STEP_SUMMARY
+        echo "5. **Create PR**: Open Pull Request on GitHub" >> $GITHUB_STEP_SUMMARY
+        echo "6. **Review Process**: Wait for CI/CD and code review" >> $GITHUB_STEP_SUMMARY
+        echo "7. **Merge**: Squash and merge after approval" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📋 Branch Naming Convention:" >> $GITHUB_STEP_SUMMARY
+        echo "- **Features**: \`feature/TASK-XXX-short-description\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **Bug Fixes**: \`bugfix/TASK-XXX-short-description\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **Hotfixes**: \`hotfix/critical-issue-description\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **Documentation**: \`docs/update-description\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🛡️ Quality Gates:" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ All 134+ tests must pass" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Code style checks (PHP CS Fixer, ESLint)" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Static analysis (PHPStan level 8)" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Security scans (no critical vulnerabilities)" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Performance checks (Lighthouse scores)" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Code review approval required" >> $GITHUB_STEP_SUMMARY
