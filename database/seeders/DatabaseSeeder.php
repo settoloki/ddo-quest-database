@@ -13,11 +13,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Seed DDO reference data first (required for quest relationships)
+        $this->call([
+            DdoReferenceDataSeeder::class,
+        ]);
 
+        // Seed sample quests if in development environment
+        if (app()->environment('local', 'testing')) {
+            $this->call([
+                DdoQuestSeeder::class,
+            ]);
+        }
+
+        // Create test user
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+        
+        $this->command->info('Database seeding completed successfully!');
     }
 }
