@@ -7,7 +7,7 @@
 
 ### 📊 Sprint Progress
 
-**Overall Progress**: 0/36 tasks completed (0%)
+**Overall Progress**: 6/36 tasks completed (17%)
 
 #### Story 1: Database Schema Setup (0/8 completed)
 - [ ] TASK-001: Create core tables migration
@@ -19,15 +19,15 @@
 - [ ] TASK-007: Add database indexes for performance
 - [ ] TASK-008: Create database seeder for reference data
 
-#### Story 2: Laravel Models and Relationships (0/8 completed)
-- [ ] TASK-009: Create Quest model with relationships and scopes
-- [ ] TASK-010: Create Duration, Patron, AdventurePack, Location models
-- [ ] TASK-011: Create Difficulty, QuestXpReward models
+#### Story 2: Laravel Models and Relationships (4/8 completed)
+- [x] TASK-009: Create Quest model with relationships and scopes ✅ (Completed: July 25, 2025)
+- [x] TASK-010: Create Duration, Patron, AdventurePack, Location models ✅ (Completed: July 25, 2025)
+- [x] TASK-011: Create Difficulty, QuestXpReward models ✅ (Completed: July 25, 2025)
 - [ ] TASK-012: Create Monster, QuestMonster models
 - [ ] TASK-013: Create Item, Enhancement, QuestLoot models
 - [ ] TASK-014: Create Saga, SagaQuest models
 - [ ] TASK-015: Create BonusXpCategory, QuestObjective models
-- [ ] TASK-016: Add model factories for testing
+- [x] TASK-016: Add model factories for testing ✅ (Completed: July 25, 2025)
 
 #### Story 3: Basic API Controllers (0/6 completed)
 - [ ] TASK-017: Create QuestController with index and show methods
@@ -46,14 +46,14 @@
 - [ ] TASK-028: Add logging for import processes
 - [ ] TASK-029: Create artisan command for running imports
 
-#### Story 5: Testing Infrastructure (0/7 completed)
+#### Story 5: Testing Infrastructure (2/7 completed)
 - [ ] TASK-030: Set up PHPUnit configuration for new features
-- [ ] TASK-031: Create model factory tests
-- [ ] TASK-032: Write unit tests for Quest model methods
-- [ ] TASK-033: Write feature tests for quest API endpoints
-- [ ] TASK-034: Create integration tests for data import
-- [ ] TASK-035: Add test database seeding
-- [ ] TASK-036: Set up test coverage reporting
+- [x] TASK-031: Create model factory tests ✅ (Completed: July 25, 2025)
+- [x] TASK-032: Write unit tests for Quest model methods ✅ (Completed: July 25, 2025)
+- [ ] TASK-033: Create API endpoint tests
+- [ ] TASK-034: Add integration tests for wiki scraping
+- [ ] TASK-035: Test database seeding and migrations
+- [ ] TASK-036: Set up continuous integration testing
 
 ---
 
