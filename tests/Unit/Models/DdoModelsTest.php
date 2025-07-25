@@ -16,8 +16,7 @@ class DdoModelsTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    public function quest_belongs_to_duration()
+    public function test_quest_belongs_to_duration(): void
     {
         $duration = Duration::factory()->create();
         $quest = Quest::factory()->create(['duration_id' => $duration->id]);
@@ -26,8 +25,7 @@ class DdoModelsTest extends TestCase
         $this->assertEquals($duration->id, $quest->duration->id);
     }
 
-    #[Test]
-    public function quest_belongs_to_patron()
+    public function test_quest_belongs_to_patron(): void
     {
         $patron = Patron::factory()->create();
         $quest = Quest::factory()->create(['patron_id' => $patron->id]);
@@ -36,8 +34,7 @@ class DdoModelsTest extends TestCase
         $this->assertEquals($patron->id, $quest->patron->id);
     }
 
-    #[Test]
-    public function quest_belongs_to_adventure_pack()
+    public function test_quest_belongs_to_adventure_pack(): void
     {
         $adventurePack = AdventurePack::factory()->create();
         $quest = Quest::factory()->create(['adventure_pack_id' => $adventurePack->id]);
@@ -46,8 +43,7 @@ class DdoModelsTest extends TestCase
         $this->assertEquals($adventurePack->id, $quest->adventurePack->id);
     }
 
-    #[Test]
-    public function quest_belongs_to_location()
+    public function test_quest_belongs_to_location(): void
     {
         $location = Location::factory()->create();
         $quest = Quest::factory()->create(['location_id' => $location->id]);
@@ -56,8 +52,7 @@ class DdoModelsTest extends TestCase
         $this->assertEquals($location->id, $quest->location->id);
     }
 
-    #[Test]
-    public function quest_has_many_xp_rewards()
+    public function test_quest_has_many_xp_rewards(): void
     {
         $quest = Quest::factory()->create();
         $difficulty = Difficulty::factory()->create();
@@ -70,8 +65,7 @@ class DdoModelsTest extends TestCase
         $this->assertInstanceOf(QuestXpReward::class, $quest->xpRewards->first());
     }
 
-    #[Test]
-    public function duration_has_many_quests()
+    public function test_duration_has_many_quests(): void
     {
         $duration = Duration::factory()->create();
         $quest = Quest::factory()->create(['duration_id' => $duration->id]);
@@ -80,8 +74,7 @@ class DdoModelsTest extends TestCase
         $this->assertInstanceOf(Quest::class, $duration->quests->first());
     }
 
-    #[Test]
-    public function patron_has_many_quests()
+    public function test_patron_has_many_quests(): void
     {
         $patron = Patron::factory()->create();
         $quest = Quest::factory()->create(['patron_id' => $patron->id]);
@@ -90,8 +83,7 @@ class DdoModelsTest extends TestCase
         $this->assertInstanceOf(Quest::class, $patron->quests->first());
     }
 
-    #[Test]
-    public function adventure_pack_has_many_quests()
+    public function test_adventure_pack_has_many_quests(): void
     {
         $adventurePack = AdventurePack::factory()->create();
         $quest = Quest::factory()->create(['adventure_pack_id' => $adventurePack->id]);
@@ -100,8 +92,7 @@ class DdoModelsTest extends TestCase
         $this->assertInstanceOf(Quest::class, $adventurePack->quests->first());
     }
 
-    #[Test]
-    public function location_has_many_quests()
+    public function test_location_has_many_quests(): void
     {
         $location = Location::factory()->create();
         $quest = Quest::factory()->create(['location_id' => $location->id]);
@@ -110,19 +101,20 @@ class DdoModelsTest extends TestCase
         $this->assertInstanceOf(Quest::class, $location->quests->first());
     }
 
-    #[Test]
-    public function location_can_have_parent_child_relationships()
+    public function test_location_can_have_parent_child_relationships(): void
     {
-        $parentLocation = Location::factory()->create();
-        $childLocation = Location::factory()->create(['parent_location_id' => $parentLocation->id]);
+        $parentLocation = Location::factory()->create(['name' => 'Parent Location Test']);
+        $childLocation = Location::factory()->create([
+            'name' => 'Child Location Test',
+            'parent_location_id' => $parentLocation->id
+        ]);
 
-        $this->assertInstanceOf(Location::class, $childLocation->parent);
-        $this->assertEquals($parentLocation->id, $childLocation->parent->id);
-        $this->assertTrue($parentLocation->children->contains($childLocation));
+        $this->assertInstanceOf(Location::class, $childLocation->parentLocation);
+        $this->assertEquals($parentLocation->id, $childLocation->parentLocation->id);
+        $this->assertTrue($parentLocation->childLocations->contains($childLocation));
     }
 
-    #[Test]
-    public function quest_xp_reward_belongs_to_quest()
+    public function test_quest_xp_reward_belongs_to_quest(): void
     {
         $quest = Quest::factory()->create();
         $difficulty = Difficulty::factory()->create();
@@ -135,8 +127,7 @@ class DdoModelsTest extends TestCase
         $this->assertEquals($quest->id, $xpReward->quest->id);
     }
 
-    #[Test]
-    public function quest_xp_reward_belongs_to_difficulty()
+    public function test_quest_xp_reward_belongs_to_difficulty(): void
     {
         $quest = Quest::factory()->create();
         $difficulty = Difficulty::factory()->create();
@@ -149,8 +140,7 @@ class DdoModelsTest extends TestCase
         $this->assertEquals($difficulty->id, $xpReward->difficulty->id);
     }
 
-    #[Test]
-    public function quest_scopes_filter_correctly()
+    public function test_quest_scopes_filter_correctly(): void
     {
         $duration = Duration::factory()->create(['name' => 'Short']);
         $patron = Patron::factory()->create(['name' => 'The Coin Lords']);
@@ -183,8 +173,7 @@ class DdoModelsTest extends TestCase
         $this->assertTrue($coinLordsQuests->contains($quest2));
     }
 
-    #[Test]
-    public function xp_calculation_methods_work_correctly()
+    public function test_xp_calculation_methods_work_correctly(): void
     {
         $difficulty = Difficulty::factory()->create([
             'multiplier' => 1.25,
@@ -207,8 +196,7 @@ class DdoModelsTest extends TestCase
         $this->assertEquals($expectedFirstTimeXp, $xpReward->xp_with_first_time_bonus);
     }
 
-    #[Test]
-    public function quest_type_attribute_works_correctly()
+    public function test_quest_type_attribute_works_correctly(): void
     {
         $quest = Quest::factory()->create();
         $difficulty = Difficulty::factory()->create();
@@ -241,8 +229,7 @@ class DdoModelsTest extends TestCase
         $this->assertEquals('Legendary', $legendaryXp->quest_type);
     }
 
-    #[Test]
-    public function models_have_proper_mass_assignment_protection()
+    public function test_models_have_proper_mass_assignment_protection(): void
     {
         // Test that models protect against mass assignment of non-fillable fields
         $questData = [
@@ -257,18 +244,19 @@ class DdoModelsTest extends TestCase
         $this->assertNull($quest->created_at); // Should not be set via mass assignment
     }
 
-    #[Test]
-    public function quest_auto_generates_slug_on_creation()
+    public function test_quest_auto_generates_slug_on_creation(): void
     {
-        $quest = Quest::factory()->create(['name' => 'Test Quest Name']);
+        $questName = 'Test Quest Name';
+        $quest = new Quest(['name' => $questName]);
+        $quest->save();
         
         $this->assertEquals('test-quest-name', $quest->slug);
     }
 
-    #[Test]
-    public function quest_updates_slug_when_name_changes()
+    public function test_quest_updates_slug_when_name_changes(): void
     {
-        $quest = Quest::factory()->create(['name' => 'Original Name']);
+        $quest = new Quest(['name' => 'Original Name']);
+        $quest->save();
         $this->assertEquals('original-name', $quest->slug);
 
         $quest->update(['name' => 'Updated Name']);
